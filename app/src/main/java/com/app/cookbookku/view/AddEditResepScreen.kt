@@ -19,10 +19,11 @@ import com.app.cookbookku.util.Constants
 import com.app.cookbookku.util.PrefManager
 import com.app.cookbookku.viewmodel.ResepViewModel
 
+
 @Composable
 fun AddEditResepScreen(
     navController: NavController,
-    resepId: Int?, // null = tambah, ada nilai = edit
+    resepId: Int?,
     resepViewModel: ResepViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -44,7 +45,7 @@ fun AddEditResepScreen(
     var langkah by remember { mutableStateOf("") }
     var foto by remember { mutableStateOf("") }
 
-    // ✅ Isi ulang state ketika data edit ditemukan
+    // Isi ulang state ketika data edit ditemukan
     LaunchedEffect(resepToEdit) {
         resepToEdit?.let {
             judul = it.nama
@@ -57,11 +58,13 @@ fun AddEditResepScreen(
         }
     }
 
+    Spacer(modifier = Modifier.height(8.dp))
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(rememberScrollState()) // biar bisa scroll kalau form panjang
+            .verticalScroll(rememberScrollState()) // scroll
     ) {
 
         // Logo

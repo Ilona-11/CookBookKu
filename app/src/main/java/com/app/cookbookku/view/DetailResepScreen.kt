@@ -42,16 +42,7 @@ fun DetailResepScreen(
     val resepList by resepViewModel.getAllResep(userId).collectAsState(initial = emptyList())
     val resep = resepList.find { it.id == resepId }
 
-    //Logo
-    Image(
-        painter = painterResource(id = R.drawable.logo_cookbook),
-        contentDescription = "Logo",
-        modifier = Modifier
-            .size(60.dp)
-            .padding(end = 8.dp)
-    )
-
-    Spacer(modifier = Modifier.height(12.dp))
+    var showDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -65,9 +56,7 @@ fun DetailResepScreen(
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
                         }
                         IconButton(onClick = {
-                            resepViewModel.deleteResep(resep)
-                            Toast.makeText(context, "Resep dihapus", Toast.LENGTH_SHORT).show()
-                            navController.popBackStack()
+                            showDialog = true
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = "Hapus")
                         }
@@ -158,6 +147,32 @@ fun DetailResepScreen(
                 Text("Resep tidak ditemukan")
             }
         }
+    }
+
+    // Dialog Konfirmasi Hapus
+    if (showDialog && resep != null) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Konfirmasi Hapus") },
+            text = { Text("Apakah Anda yakin ingin menghapus resep ini?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    resepViewModel.deleteResep(resep)
+                    Toast.makeText(context, "Resep dihapus", Toast.LENGTH_SHORT).show()
+                    showDialog = false
+                    navController.popBackStack()
+                }) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                }) {
+                    Text("Batal")
+                }
+            }
+        )
     }
 }
 
